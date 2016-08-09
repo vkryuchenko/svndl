@@ -76,6 +76,7 @@ func main() {
 			for len(taskChanel) > 0 {
 				task := <- taskChanel
 				targetPath := filepath.Join(runPath, task.LocalPath)
+				log.Printf("Get %s to %s", task.SvnURL, targetPath)
 				if err := helpers.GetData(task.SvnURL, targetPath, task.HardReset); err != nil {
 					log.Panic(err)
 				}

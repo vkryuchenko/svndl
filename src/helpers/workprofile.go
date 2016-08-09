@@ -6,7 +6,6 @@ author Kryuchenko Vyacheslav
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 )
 
@@ -31,6 +30,5 @@ func (wp *WorkProfile) Read(profilePath string) error {
 	if decode_err != nil {
 		return err
 	}
-	log.Println("OK")
 	return nil
 }
