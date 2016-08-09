@@ -1,0 +1,19 @@
+{
+  "Tasks": [
+    {
+      "SvnUrl": "svn://example.com/repo0/path/0",
+      "LocalPath": "repo0/path/0",
+      "HardReset": false
+    },
+    {
+      "SvnUrl": "svn://example.com/repo2/path/0",
+      "LocalPath": "repo2/path/0",
+      "HardReset": true
+    },
+    {
+      "SvnUrl": "svn://example.com/repo5/path/10",
+      "LocalPath": "repo5/path/10",
+      "HardReset": false
+    }
+  ]
+}
