@@ -6,13 +6,13 @@ author Kryuchenko Vyacheslav
 
 import (
 	"flag"
+	"helpers"
 	"log"
+	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"sync"
-	"os"
-	"helpers"
 )
 
 const (
@@ -38,7 +38,7 @@ func main() {
 		log.Panic("Profile not set!")
 	}
 
-	profile := helpers.WorkProfile{}
+	profile := helpers.MetaProfile{}
 	if err := profile.Read(profilePath); err != nil {
 		log.Panic(err)
 	}
@@ -74,7 +74,7 @@ func main() {
 		go func() {
 			defer wg.Done()
 			for len(taskChanel) > 0 {
-				task := <- taskChanel
+				task := <-taskChanel
 				targetPath := filepath.Join(runPath, task.LocalPath)
 				log.Printf("Get %s to %s", task.SvnURL, targetPath)
 				if err := helpers.GetData(task.SvnURL, targetPath, task.HardReset); err != nil {

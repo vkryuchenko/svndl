@@ -6,6 +6,7 @@ author Kryuchenko Vyacheslav
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -15,11 +16,12 @@ type WorkTask struct {
 	HardReset bool   `json:"HardReset"`
 }
 
-type WorkProfile struct {
+type BasicProfile struct {
 	Tasks []WorkTask `json:"Tasks"`
 }
 
-func (wp *WorkProfile) Read(profilePath string) error {
+func (wp *BasicProfile) Read(profilePath string) error {
+	fmt.Printf("Read %s\n", profilePath)
 	cf, err := os.Open(profilePath)
 	defer cf.Close()
 	if err != nil {
