@@ -6,7 +6,6 @@ author Kryuchenko Vyacheslav
 
 import (
 	"flag"
-	"fmt"
 	"helpers"
 	"log"
 	"os"
@@ -34,6 +33,8 @@ func main() {
 	flag.StringVar(&workersCount, "workers", "auto", "Workers count. Must be more then 0 or auto(is default).")
 	flag.StringVar(&profilePath, "profile", "", "Path to work profile.")
 	flag.Parse()
+
+	log.SetFlags(0)  // disable print date end time
 
 	if profilePath == "" {
 		log.Panic("Profile not set!")
@@ -77,7 +78,7 @@ func main() {
 			for len(taskChanel) > 0 {
 				task := <-taskChanel
 				targetPath := filepath.Join(runPath, task.LocalPath)
-				fmt.Printf("Get %s to %s", task.SvnURL, targetPath)
+				log.Printf("Get %s to %s", task.SvnURL, targetPath)
 				if err := helpers.GetData(task.SvnURL, targetPath, task.HardReset); err != nil {
 					log.Panic(err)
 				}

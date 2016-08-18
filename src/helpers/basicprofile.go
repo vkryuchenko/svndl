@@ -6,8 +6,8 @@ author Kryuchenko Vyacheslav
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
+	"log"
 )
 
 type WorkTask struct {
@@ -21,7 +21,7 @@ type BasicProfile struct {
 }
 
 func (wp *BasicProfile) Read(profilePath string) error {
-	fmt.Printf("Read %s\n", profilePath)
+	log.Printf("Read %s\n", profilePath)
 	cf, err := os.Open(profilePath)
 	defer cf.Close()
 	if err != nil {
