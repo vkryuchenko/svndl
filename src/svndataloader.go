@@ -22,6 +22,7 @@ const (
 func main() {
 	var workersCount string
 	var profilePath string
+	var revisionsPath string
 	var processCount int
 	//var err error
 	cpuCount := runtime.NumCPU()
@@ -32,9 +33,10 @@ func main() {
 
 	flag.StringVar(&workersCount, "workers", "auto", "Workers count. Must be more then 0 or auto(is default).")
 	flag.StringVar(&profilePath, "profile", "", "Path to work profile.")
+	flag.StringVar(&revisionsPath, "revisions", "", "Path to file with checkout revisions")
 	flag.Parse()
 
-	log.SetFlags(0)  // disable print date end time
+	log.SetFlags(0) // disable print date end time
 
 	if profilePath == "" {
 		log.Panic("Profile not set!")
@@ -69,6 +71,13 @@ func main() {
 		taskChanel <- task
 	}
 
+	revisions := helpers.Revisions{Map: make(map[string]string)}
+	if revisionsPath != "" {
+		revisions.Read(revisionsPath)
+	} else {
+		revisions.Map["all"] = "HEAD"
+	}
+
 	wg := sync.WaitGroup{}
 	wg.Add(processCount)
 
@@ -77,9 +86,10 @@ func main() {
 			defer wg.Done()
 			for len(taskChanel) > 0 {
 				task := <-taskChanel
+				task.CheckRevision(revisions.Map)
 				targetPath := filepath.Join(runPath, task.LocalPath)
-				log.Printf("Get %s to %s", task.SvnURL, targetPath)
-				if err := helpers.GetData(task.SvnURL, targetPath, task.HardReset); err != nil {
+				log.Printf("Get %s to %s with revision %s", task.SvnURL, targetPath, task.Revision)
+				if err := helpers.GetData(task.SvnURL, targetPath, task.Revision, task.HardReset); err != nil {
 					log.Panic(err)
 				}
 			}

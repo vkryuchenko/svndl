@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func GetData(uri string, target string, useHardReset bool) error {
+func GetData(uri string, target string, revision string, useHardReset bool) error {
 	var err error
 	svn := svnwrapper.Svn{}
 	if _, err = os.Stat(target); err == nil {
@@ -29,5 +29,5 @@ func GetData(uri string, target string, useHardReset bool) error {
 			}
 		}
 	}
-	return svn.CheckOut(uri, target, 0, []string{"--ignore-externals", "--force"})
+	return svn.CheckOut(uri, target, revision, []string{"--ignore-externals", "--force"})
 }
