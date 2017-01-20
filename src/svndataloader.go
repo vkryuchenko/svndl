@@ -88,9 +88,8 @@ func main() {
 				task := <-taskChanel
 				task.CheckRevision(revisions.Map)
 				targetPath := filepath.Join(runPath, task.LocalPath)
-				log.Printf("Get %s to %s with revision %s", task.SvnURL, targetPath, task.Revision)
 				if err := helpers.GetData(task.SvnURL, targetPath, task.Revision, task.HardReset); err != nil {
-					log.Panic(err)
+					panic(err)
 				}
 			}
 		}()
