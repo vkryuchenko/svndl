@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	MIN_PROC_COUNT = 2
+	minProcCount = 2
 )
 
 func main() {
@@ -24,6 +24,7 @@ func main() {
 	var profilePath string
 	var revisionsPath string
 	var processCount int
+	var revisions helpers.Revisions
 	//var err error
 	cpuCount := runtime.NumCPU()
 	runPath, err := os.Getwd()
@@ -59,40 +60,54 @@ func main() {
 			log.Panic(err)
 		}
 	}
-	if processCount < MIN_PROC_COUNT {
-		processCount = MIN_PROC_COUNT
+	if processCount <= minProcCount {
+		processCount = minProcCount
 	}
-	if processCount > len(profile.Tasks) {
+	if processCount >= len(profile.Tasks) {
 		processCount = len(profile.Tasks)
 	}
 
-	taskChanel := make(chan helpers.WorkTask, len(profile.Tasks))
-	for _, task := range profile.Tasks {
-		taskChanel <- task
-	}
-
-	revisions := helpers.Revisions{Map: make(map[string]string)}
+	revisions = helpers.Revisions{Map: make(map[string]string)}
 	if revisionsPath != "" {
 		revisions.Read(revisionsPath)
 	} else {
 		revisions.Map["all"] = "HEAD"
 	}
+	// remove invalid folders
+	for index, task := range profile.Tasks {
+		valid := task.LocalPathValid
+		task.LocalPath = filepath.Join(runPath, task.LocalPath)
+		valid = helpers.CheckLocalPathValid(task)
+		if !valid {
+			log.Printf("Invalid path -- %s", task.LocalPath)
+			err = os.RemoveAll(task.LocalPath)
+			if err != nil {
+				panic(err)
+			}
+		} else {
+			profile.Tasks[index].LocalPathValid = valid
+		}
+	}
 
-	wg := sync.WaitGroup{}
-	wg.Add(processCount)
-
+	// get data
+	getDataChanel := make(chan helpers.WorkTask, len(profile.Tasks))
+	for _, task := range profile.Tasks {
+		task.LocalPath = filepath.Join(runPath, task.LocalPath)
+		getDataChanel <- task
+	}
+	getDataGroup := sync.WaitGroup{}
+	getDataGroup.Add(processCount)
 	for i := 0; i < processCount; i++ {
 		go func() {
-			defer wg.Done()
-			for len(taskChanel) > 0 {
-				task := <-taskChanel
+			defer getDataGroup.Done()
+			for len(getDataChanel) > 0 {
+				task := <-getDataChanel
 				task.CheckRevision(revisions.Map)
-				targetPath := filepath.Join(runPath, task.LocalPath)
-				if err := helpers.GetData(task.SvnURL, targetPath, task.Revision, task.HardReset); err != nil {
+				if err := helpers.GetData(task); err != nil {
 					panic(err)
 				}
 			}
 		}()
 	}
-	wg.Wait()
+	getDataGroup.Wait()
 }
