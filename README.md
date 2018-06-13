@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4bedac3a0f274e80b507370bc0214260)](https://www.codacy.com/app/slavyan85/SvnDataLoader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=slavyan85/svndataloader&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/53a24ae2f42e488fbe9099e5734db2a0)](https://www.codacy.com/app/slavyan85/svndataloader?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=slavyan85/svndataloader&amp;utm_campaign=Badge_Grade)
 # svndataloader
 Multithread SVN client
 
