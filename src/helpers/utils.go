@@ -5,8 +5,8 @@ author Kryuchenko Vyacheslav
 */
 
 import (
+	"github.com/slavyan85/svnwrapper"
 	"log"
-	"svnwrapper"
 )
 
 func GetData(task WorkTask) error {

@@ -4,10 +4,10 @@ author Vyacheslav Kryuchenko
 package helpers
 
 import (
+	"github.com/slavyan85/svnwrapper"
 	"log"
 	"os"
 	"strings"
-	"svnwrapper"
 )
 
 type WorkTask struct {
