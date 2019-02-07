@@ -1,5 +1,5 @@
 #!/bin/bash
-export GOPATH=$GOPATH:`pwd`
+export GOPATH=$GOPATH:$(pwd)
 go build -o svndl src/svndataloader.go
 
 export GOOS=windows
