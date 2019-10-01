@@ -6,12 +6,12 @@ author Kryuchenko Vyacheslav
 
 import (
 	"flag"
-	"helpers"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
+	"svndl/helpers"
 	"sync"
 )
 
@@ -26,10 +26,9 @@ func main() {
 	var processCount int
 	var revisions helpers.Revisions
 	//var err error
-	cpuCount := runtime.NumCPU()
 	runPath, err := os.Getwd()
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 
 	flag.StringVar(&workersCount, "workers", "auto", "Workers count. Must be more then 0 or auto(is default).")
@@ -40,24 +39,20 @@ func main() {
 	log.SetFlags(0) // disable print date end time
 
 	if profilePath == "" {
-		log.Panic("Profile not set!")
+		log.Fatal("Profile not set!")
 	}
 
 	profile := helpers.MetaProfile{}
 	if err := profile.Read(profilePath); err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 
 	if workersCount == "auto" {
-		if (cpuCount % 2) == 0 {
-			processCount = cpuCount / 2
-		} else {
-			processCount = (cpuCount - 1) / 2
-		}
+		processCount = runtime.NumCPU()
 	} else {
 		processCount, err = strconv.Atoi(workersCount)
 		if err != nil {
-			log.Panic(err)
+			log.Fatal(err)
 		}
 	}
 	if processCount <= minProcCount {
@@ -69,7 +64,7 @@ func main() {
 
 	revisions = helpers.Revisions{Map: make(map[string]string)}
 	if revisionsPath != "" {
-		revisions.Read(revisionsPath)
+		_ = revisions.Read(revisionsPath)
 	} else {
 		revisions.Map["all"] = "HEAD"
 	}
@@ -82,7 +77,7 @@ func main() {
 			log.Printf("Invalid path -- %s", task.LocalPath)
 			err = os.RemoveAll(task.LocalPath)
 			if err != nil {
-				panic(err)
+				log.Fatal(err)
 			}
 		} else {
 			profile.Tasks[index].LocalPathValid = valid
@@ -104,7 +99,7 @@ func main() {
 				task := <-getDataChanel
 				task.CheckRevision(revisions.Map)
 				if err := helpers.GetData(task); err != nil {
-					panic(err)
+					log.Fatal(err)
 				}
 			}
 		}()

@@ -17,13 +17,13 @@ type BasicProfile struct {
 func (wp *BasicProfile) Read(profilePath string) error {
 	log.Printf("Read %s\n", profilePath)
 	cf, err := os.Open(profilePath)
-	defer cf.Close()
 	if err != nil {
 		return err
 	}
+	defer cf.Close()
 	decoder := json.NewDecoder(cf)
-	decode_err := decoder.Decode(wp)
-	if decode_err != nil {
+	decodeErr := decoder.Decode(wp)
+	if decodeErr != nil {
 		return err
 	}
 	return nil

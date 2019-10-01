@@ -7,7 +7,6 @@ author Kryuchenko Vyacheslav
 import (
 	"io/ioutil"
 	"log"
-	"runtime"
 	"strings"
 )
 
@@ -16,22 +15,16 @@ type Revisions struct {
 }
 
 func (r *Revisions) Read(revisionsPath string) error {
-	var lineSeparator string
 	log.Printf("Read %s\n", revisionsPath)
 	content, err := ioutil.ReadFile(revisionsPath)
 	if err != nil {
 		return err
 	}
-	if runtime.GOOS == "windows" {
-		lineSeparator = "\r\n"
-	} else {
-		lineSeparator = "\n"
-	}
 
-	for _, line := range strings.Split(string(content[:]), lineSeparator) {
+	for _, line := range strings.Split(string(content[:]), "\n") {
 		data := strings.Split(line, "=")
 		if len(data) > 1 {
-			r.Map[data[0]] = data[1]
+			r.Map[data[0]] = strings.TrimSuffix(data[1], "\r")
 		}
 	}
 	return nil
