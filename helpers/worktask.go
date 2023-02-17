@@ -4,7 +4,7 @@ author Vyacheslav Kryuchenko
 package helpers
 
 import (
-	"github.com/slavyan85/svnwrapper"
+	"github.com/vkryuchenko/svnwrapper"
 	"log"
 	"os"
 	"strings"

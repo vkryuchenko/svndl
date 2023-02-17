@@ -1,5 +1,5 @@
 module svndl
 
-go 1.13
+go 1.20
 
-require github.com/slavyan85/svnwrapper v1.0.0
+require github.com/vkryuchenko/svnwrapper v0.0.0-20230217130243-cac02f19039f

@@ -5,7 +5,7 @@ author Kryuchenko Vyacheslav
 */
 
 import (
-	"github.com/slavyan85/svnwrapper"
+	"github.com/vkryuchenko/svnwrapper"
 	"log"
 )
 
